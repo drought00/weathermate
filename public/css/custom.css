@@ -100,3 +100,9 @@ html, body{
     padding: 24px 10px;
     min-height: 130px;
 }
+
+@media (max-width: 576px) {
+    .forecast .card-title{
+        font-size: 24px;
+    }
+}
