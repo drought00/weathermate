@@ -22,6 +22,6 @@ This is not for commercial use. Created solely for the coding test in Bizmates.
 ## Notes
 
 - Used VueJS for frontend. First time using it and had fun digging deeper in the concep t of the framework.
-
-- Encountered problem in CORS when accessing api. The reason might be because this is running in localhost that's why the api server does not allow access. To resolve this, I used a proxy server.
+- API Keys and API Urls should be in my .env file. Still looking for a way for VUE to read them directly in .env.
+- Encountered problem in CORS when accessing api. Tried curl and postman and they were all working fine. The reason might be because this is running in localhost that's why the api server does not allow access. To resolve this, I used a proxy server.
 
