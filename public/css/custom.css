@@ -1,0 +1,102 @@
+html, body{
+    font-family: 'Roboto', sans-serif;
+}
+.navbar select {
+    display: block;
+}
+.navbar .logo {
+    color: #2d2d2d;
+    margin-top: 30px;
+    font-size: 32px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+}
+.navbar .txtblue {
+    color: #1287cd;
+}
+.navbar .search-container{
+    position: relative;
+    margin-top: 30px;
+    text-align: center;
+}
+.navbar .btn:hover {
+    background: #1287cd;
+}
+.navbar input[type=text]:focus {
+    border-bottom: 1px solid #1287cd !important;
+    -webkit-box-shadow: 0 1px 0 0 #1287cd !important;
+    box-shadow: 0 1px 0 0 #1287cd !important;
+}
+.search-container button {
+    font-family: inherit;
+    background: #1287cd;
+    position: absolute;
+    right: 10px;
+}
+.search-container button:focus,
+.search-container button:active {
+    background: #1287cd;
+}
+.search-result {
+    text-align: left;
+    position: absolute;
+    width: 100%;
+    background: #f8f8f8;
+    z-index: 100;
+    max-height: 450px;
+    overflow-y: scroll;
+}
+.search-result .name {
+    font-weight: 700;
+}
+.search-result .select {
+    padding: 10px 5px;
+    border-bottom: 1px solid #ebebeb;
+    cursor: pointer;
+}
+.search-result .select:hover,
+.search-result .select:active {
+    background: #ebebeb;
+}
+.search-result .details {
+    color: #2D2D01;
+    font-size: 14px;
+    margin-top: 4px
+}
+.current {
+    margin-top: 40px;
+    text-align: center;
+}
+.temp {
+    font-size: 52px;
+    font-weight: 600;
+}
+.sub {
+    font-size: 14px;
+    text-transform: capitalize;
+}
+.location {
+    margin-top: 40px;
+}
+.forecast {
+    background: #ebebeb;
+    margin-top: 20px;
+    padding: 20px 0;
+}
+.forecast .col {
+    padding-left: 4px;
+    padding-right: 4px;
+}
+.forecast .card-image img{
+    max-width: 100px;
+}
+.forecast .card-date{
+    padding: 10px;
+}
+.forecast .card-title{
+    font-size: 40px;
+}
+.forecast .card-content{
+    padding: 24px 10px;
+    min-height: 130px;
+}
