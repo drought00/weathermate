@@ -11,6 +11,8 @@
 |
 */
 
-Route::get('/', function () {
-    return view('content');
+Route::get('/', 'IndexController@index');
+Route::get('/search', function(){
+    return redirect('/');
 });
+Route::post('/search', 'IndexController@searchWeather');

@@ -18,6 +18,7 @@ html, body{
     position: relative;
     margin-top: 30px;
     text-align: center;
+    padding: 0;
 }
 .navbar .btn:hover {
     background: #1287cd;
@@ -31,20 +32,20 @@ html, body{
     font-family: inherit;
     background: #1287cd;
     position: absolute;
-    right: 10px;
+    right: 0;
 }
 .search-container button:focus,
 .search-container button:active {
     background: #1287cd;
 }
 .search-result {
-    text-align: left;
-    position: absolute;
-    width: 100%;
     background: #f8f8f8;
-    z-index: 100;
     max-height: 450px;
-    overflow-y: scroll;
+    overflow-y: auto;
+    position: absolute;
+    text-align: left;
+    width: 100%;
+    z-index: 100;
 }
 .search-result .name {
     font-weight: 700;
@@ -63,6 +64,19 @@ html, body{
     font-size: 14px;
     margin-top: 4px
 }
+.preloader-wrapper {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    top: 5px;
+    right: 30px;
+}
+.preloader-wrapper.active {
+    z-index: 1;
+}
+.spinner-layer {
+    border-color: #1287cd;
+}
 .current {
     margin-top: 40px;
     text-align: center;
@@ -70,13 +84,21 @@ html, body{
 .temp {
     font-size: 52px;
     font-weight: 600;
+    line-height: normal;
 }
 .sub {
-    font-size: 14px;
+    font-size: 18px;
     text-transform: capitalize;
+    line-height: initial;
 }
 .location {
+    font-size: 20px;
     margin-top: 40px;
+}
+.date {
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: uppercase;
 }
 .forecast {
     background: #ebebeb;
@@ -91,14 +113,23 @@ html, body{
     max-width: 100px;
 }
 .forecast .card-date{
-    padding: 10px;
+    padding: 10px 0 0 10px;
+}
+.forecast .card-time{
+    color: #a9a4a4;
+    font-size: 14px;
+    padding-left: 10px;
 }
 .forecast .card-title{
+    font-weight: 500;
     font-size: 40px;
 }
 .forecast .card-content{
     padding: 24px 10px;
     min-height: 130px;
+}
+.footer, .banner {
+    text-align: center;
 }
 
 @media (max-width: 576px) {

@@ -1908,7 +1908,6 @@ module.exports = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _eventbus_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../eventbus.js */ "./resources/js/eventbus.js");
 //
 //
 //
@@ -1918,51 +1917,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-var vue;
-
 /* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    return {
-      city: "Osaka",
-      country_code: "JP",
-      main: {
-        temp: '',
-        temp_min: '',
-        temp_max: ''
-      },
-      weather: [{
-        description: ''
-      }],
-      name: ''
-    };
-  },
-  created: function created() {
-    vue = this;
-    this.fetchCurrent(this.city, this.country_code);
-  },
-  methods: {
-    fetchCurrent: function fetchCurrent(city, country_code) {
-      var _this = this;
-
-      var proxy_server = "https://cors-anywhere.herokuapp.com/";
-      var weather_api_url = "https://api.openweathermap.org/";
-      var url = proxy_server + weather_api_url + "data/2.5/weather";
-      axios.get(url, {
-        params: {
-          q: city + "," + country_code,
-          appid: "3f3a8cab0e562cee2cbaecb6bba20f5a",
-          units: "metric"
-        }
-      }).then(function (res) {
-        _this.main = res.data.main;
-        _this.weather = res.data.weather;
-        _this.name = res.data.name;
-      });
-    }
-  }
-});
-_eventbus_js__WEBPACK_IMPORTED_MODULE_0__["EventBus"].$on('getWeather', function (location) {
-  vue.fetchCurrent(location[0], location[1]);
+  props: ['weather']
 });
 
 /***/ }),
@@ -2009,9 +1965,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _eventbus_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../eventbus.js */ "./resources/js/eventbus.js");
-var _this = undefined;
-
 //
 //
 //
@@ -2027,59 +1980,8 @@ var _this = undefined;
 //
 //
 //
-//
-//
-//
-var vue;
-
-_eventbus_js__WEBPACK_IMPORTED_MODULE_0__["EventBus"].$on('_getWeather', function (location) {
-  _this.country_code = location[0];
-  _this.city = location[1];
-});
 /* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    return {
-      list: [{
-        main: {
-          temp: '',
-          temp_min: '',
-          temp_max: ''
-        },
-        weather: [{
-          description: '',
-          icon: ''
-        }]
-      }],
-      city: "Osaka",
-      country_code: "JP"
-    };
-  },
-  created: function created() {
-    vue = this;
-    this.fetchForecast(this.city, this.country_code);
-  },
-  methods: {
-    fetchForecast: function fetchForecast(city, country_code) {
-      var _this2 = this;
-
-      var proxy_server = "https://cors-anywhere.herokuapp.com/";
-      var weather_api_url = "https://api.openweathermap.org/";
-      var url = proxy_server + weather_api_url + "data/2.5/forecast";
-      axios.get(url, {
-        params: {
-          q: city + "," + country_code,
-          appid: "3f3a8cab0e562cee2cbaecb6bba20f5a",
-          units: "metric"
-        }
-      }).then(function (res) {
-        _this2.list = res.data.list;
-        _this2.city = res.data.city;
-      });
-    }
-  }
-});
-_eventbus_js__WEBPACK_IMPORTED_MODULE_0__["EventBus"].$on('getWeather', function (location) {
-  vue.fetchForecast(location[0], location[1]);
+  props: ['forecast']
 });
 
 /***/ }),
@@ -2093,7 +1995,6 @@ _eventbus_js__WEBPACK_IMPORTED_MODULE_0__["EventBus"].$on('getWeather', function
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _eventbus_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../eventbus.js */ "./resources/js/eventbus.js");
 //
 //
 //
@@ -2114,18 +2015,50 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+var debounce = __webpack_require__(/*! debounce */ "./node_modules/debounce/index.js");
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      isSearching: false,
       isShow: false,
       locations: [],
       location: '',
-      selected: '',
-      cc: ''
+      country_code: '',
+      city: '',
+      name: '',
+      item: [],
+      csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
     };
   },
   methods: {
+    debounceInput: _.debounce(function () {
+      this.search();
+    }, 500),
     search: function search() {
       var _this = this;
 
@@ -2135,6 +2068,7 @@ __webpack_require__.r(__webpack_exports__);
       var cliend_id = "P5UFRKPM1CEBVTOALQL2XYAKQCWDIY10BDEUU4GMDZ0SHDGT";
       var client_secret = "2J4K32VPWYY2H1T5FMZDR4SPWVXFF3OW2CY4SAAMGJ3ZYFFV";
       var version = "20200101";
+      this.isSearching = true;
       axios.get(url, {
         params: {
           near: this.location,
@@ -2145,17 +2079,26 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (res) {
         _this.locations = res.data.response.venues;
         _this.isShow = true;
+        _this.isSearching = false;
+        _this.country_code = _this.locations[0].location.cc;
+        _this.city = _this.locations[0].location.city;
       })["catch"](function (error) {
-        alert("No Results Found");
+        _this.locations = null;
+        _this.isShow = true;
+        _this.isSearching = false;
       });
     },
     toggleSearchResult: function toggleSearchResult() {
       this.isShow = this.isShow ? false : true;
     },
-    getWeather: function getWeather(cc, city, name) {
-      this.location = name;
+    getWeather: function getWeather(country_code, city, name) {
       this.isShow = false;
-      _eventbus_js__WEBPACK_IMPORTED_MODULE_0__["EventBus"].$emit('getWeather', [city, cc]);
+      this.location = this.name = name;
+      this.country_code = country_code;
+      this.city = city;
+    },
+    submit: function submit() {
+      document.getElementById("weather").submit();
     }
   }
 });
@@ -6689,6 +6632,87 @@ __webpack_require__.r(__webpack_exports__);
 
 })));
 //# sourceMappingURL=bootstrap.js.map
+
+
+/***/ }),
+
+/***/ "./node_modules/debounce/index.js":
+/*!****************************************!*\
+  !*** ./node_modules/debounce/index.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/**
+ * Returns a function, that, as long as it continues to be invoked, will not
+ * be triggered. The function will be called after it stops being called for
+ * N milliseconds. If `immediate` is passed, trigger the function on the
+ * leading edge, instead of the trailing. The function also has a property 'clear' 
+ * that is a function which will clear the timer to prevent previously scheduled executions. 
+ *
+ * @source underscore.js
+ * @see http://unscriptable.com/2009/03/20/debouncing-javascript-methods/
+ * @param {Function} function to wrap
+ * @param {Number} timeout in ms (`100`)
+ * @param {Boolean} whether to execute at the beginning (`false`)
+ * @api public
+ */
+function debounce(func, wait, immediate){
+  var timeout, args, context, timestamp, result;
+  if (null == wait) wait = 100;
+
+  function later() {
+    var last = Date.now() - timestamp;
+
+    if (last < wait && last >= 0) {
+      timeout = setTimeout(later, wait - last);
+    } else {
+      timeout = null;
+      if (!immediate) {
+        result = func.apply(context, args);
+        context = args = null;
+      }
+    }
+  };
+
+  var debounced = function(){
+    context = this;
+    args = arguments;
+    timestamp = Date.now();
+    var callNow = immediate && !timeout;
+    if (!timeout) timeout = setTimeout(later, wait);
+    if (callNow) {
+      result = func.apply(context, args);
+      context = args = null;
+    }
+
+    return result;
+  };
+
+  debounced.clear = function() {
+    if (timeout) {
+      clearTimeout(timeout);
+      timeout = null;
+    }
+  };
+  
+  debounced.flush = function() {
+    if (timeout) {
+      result = func.apply(context, args);
+      context = args = null;
+      
+      clearTimeout(timeout);
+      timeout = null;
+    }
+  };
+
+  return debounced;
+};
+
+// Adds compatibility for ES modules
+debounce.debounce = debounce;
+
+module.exports = debounce;
 
 
 /***/ }),
@@ -37533,21 +37557,28 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "current" }, [
-    _c("div", { staticClass: "sub" }, [_vm._v("Current Weather")]),
+    _c("div", { staticClass: "date" }, [_vm._v("Current Weather")]),
     _vm._v(" "),
-    _c("div", { staticClass: "temp" }, [_vm._v(_vm._s(_vm.main.temp) + "° ")]),
+    _c("div", { staticClass: "temp" }, [
+      _vm._v(_vm._s(_vm.weather.temperature) + "° ")
+    ]),
     _vm._v(" "),
     _c("div", { staticClass: "sub" }, [
       _vm._v(
-        _vm._s(_vm.main.temp_max) + "° / " + _vm._s(_vm.main.temp_min) + "°"
+        _vm._s(_vm.weather.temperature_max) +
+          "° / " +
+          _vm._s(_vm.weather.temperature_min) +
+          "°"
       )
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "sub" }, [
-      _vm._v(_vm._s(_vm.weather[0].description))
+      _vm._v(_vm._s(_vm.weather.description))
     ]),
     _vm._v(" "),
-    _c("div", { staticClass: "location" }, [_vm._v(_vm._s(_vm.name))])
+    _c("div", { staticClass: "location" }, [
+      _vm._v(_vm._s(_vm.weather.location))
+    ])
   ])
 }
 var staticRenderFns = []
@@ -37619,40 +37650,35 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "forecast row" }, [
-    _c(
-      "div",
-      { staticClass: "container" },
-      _vm._l(_vm.list, function(item) {
-        return _c("div", { key: item.id, staticClass: "col l2 m3 s4" }, [
-          _c("div", { staticClass: "card" }, [
-            _c("div", { staticClass: "card-date" }, [
-              _vm._v(_vm._s(item.dt_txt))
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-image" }, [
-              _c("img", {
-                attrs: {
-                  src:
-                    "http://openweathermap.org/img/wn/" +
-                    item.weather[0].icon +
-                    "@2x.png"
-                }
-              })
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-content" }, [
-              _c("span", { staticClass: "card-title" }, [
-                _vm._v(_vm._s(item.main.temp) + "°")
-              ]),
-              _vm._v(" "),
-              _c("p", [_vm._v(_vm._s(item.weather[0].description))])
-            ])
-          ])
-        ])
-      }),
-      0
-    )
+  return _c("div", { staticClass: "col l2 m3 s4" }, [
+    _c("div", { staticClass: "card" }, [
+      _c("div", { staticClass: "card-date date" }, [
+        _vm._v(_vm._s(_vm.forecast.date))
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "card-time" }, [
+        _vm._v(_vm._s(_vm.forecast.time))
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "card-image" }, [
+        _c("img", {
+          attrs: {
+            src:
+              "http://openweathermap.org/img/wn/" +
+              _vm.forecast.icon +
+              "@2x.png"
+          }
+        })
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "card-content" }, [
+        _c("span", { staticClass: "card-title" }, [
+          _vm._v(_vm._s(_vm.forecast.temp) + "°")
+        ]),
+        _vm._v(" "),
+        _c("p", [_vm._v(_vm._s(_vm.forecast.description))])
+      ])
+    ])
   ])
 }
 var staticRenderFns = []
@@ -37697,12 +37723,15 @@ var render = function() {
           click: function($event) {
             return _vm.toggleSearchResult()
           },
-          input: function($event) {
-            if ($event.target.composing) {
-              return
-            }
-            _vm.location = $event.target.value
-          }
+          input: [
+            function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.location = $event.target.value
+            },
+            _vm.debounceInput
+          ]
         }
       }),
       _vm._v(" "),
@@ -37710,9 +37739,9 @@ var render = function() {
         "button",
         {
           staticClass: "btn waves-effect waves-light",
-          class: [{ disabled: !_vm.location }],
-          attrs: { type: "submit" },
-          on: { click: _vm.search }
+          class: [{ disabled: _vm.isSearching }],
+          attrs: { disabled: !_vm.location, type: "submit" },
+          on: { click: _vm.submit }
         },
         [_vm._v("Search")]
       ),
@@ -37720,56 +37749,157 @@ var render = function() {
       _c(
         "div",
         {
-          directives: [
-            {
-              name: "show",
-              rawName: "v-show",
-              value: _vm.isShow,
-              expression: "isShow"
-            }
-          ],
-          staticClass: "search-result"
+          staticClass: "preloader-wrapper",
+          class: [{ active: _vm.isSearching }]
         },
-        _vm._l(_vm.locations, function(item) {
-          return _c(
+        [_vm._m(1)]
+      ),
+      _vm._v(" "),
+      _vm.locations
+        ? _c(
             "div",
             {
-              key: item.id,
-              staticClass: "select",
-              on: {
-                click: function($event) {
-                  return _vm.getWeather(
-                    item.location.cc,
-                    item.location.city,
-                    item.name
-                  )
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.isShow,
+                  expression: "isShow"
                 }
-              }
+              ],
+              staticClass: "search-result"
             },
-            [
-              _c("span", { staticClass: "name" }, [_vm._v(_vm._s(item.name))]),
-              _vm._v(" "),
-              _c(
+            _vm._l(_vm.locations, function(item) {
+              return _c(
                 "div",
-                { staticClass: "details" },
+                {
+                  key: item.id,
+                  staticClass: "select",
+                  on: {
+                    click: function($event) {
+                      return _vm.getWeather(
+                        item.location.cc,
+                        item.location.city,
+                        item.name
+                      )
+                    }
+                  }
+                },
                 [
-                  _vm._v(
-                    "\n                    " +
-                      _vm._s(item.location.formattedAddress) +
-                      "\n                     "
-                  ),
-                  _vm._l(item.location.formattedAddress, function(address) {
-                    return _c("span", { key: address.id }, [
-                      _vm._v(_vm._s(address) + " ")
-                    ])
-                  })
-                ],
-                2
+                  _c("span", { staticClass: "name" }, [
+                    _vm._v(_vm._s(item.name))
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "details" },
+                    [
+                      _vm._v(
+                        "\n                    " +
+                          _vm._s(item.location.formattedAddress) +
+                          "\n                    "
+                      ),
+                      _vm._l(item.location.formattedAddress, function(address) {
+                        return _c("span", { key: address.id }, [
+                          _vm._v(_vm._s(address) + " ")
+                        ])
+                      })
+                    ],
+                    2
+                  )
+                ]
               )
-            ]
+            }),
+            0
           )
-        }),
-        0
+        : _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.isShow,
+                  expression: "isShow"
+                }
+              ],
+              staticClass: "search-result"
+            },
+            [_vm._m(2)]
+          ),
+      _vm._v(" "),
+      _c(
+        "form",
+        { attrs: { id: "weather", action: "search", method: "POST" } },
+        [
+          _c("input", {
+            attrs: { type: "hidden", name: "_token" },
+            domProps: { value: _vm.csrf }
+          }),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.country_code,
+                expression: "country_code"
+              }
+            ],
+            attrs: { type: "hidden", name: "country_code" },
+            domProps: { value: _vm.country_code },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.country_code = $event.target.value
+              }
+            }
+          }),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.city,
+                expression: "city"
+              }
+            ],
+            attrs: { type: "hidden", name: "city" },
+            domProps: { value: _vm.city },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.city = $event.target.value
+              }
+            }
+          }),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.name,
+                expression: "name"
+              }
+            ],
+            attrs: { type: "hidden", name: "name" },
+            domProps: { value: _vm.name },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.name = $event.target.value
+              }
+            }
+          })
+        ]
       )
     ])
   ])
@@ -37782,6 +37912,32 @@ var staticRenderFns = [
     return _c("div", { staticClass: "col s12 l4 logo" }, [
       _c("span", { staticClass: "txtblue" }, [_vm._v("Weather")]),
       _vm._v("Mate\n    ")
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "spinner-layer" }, [
+      _c("div", { staticClass: "circle-clipper left" }, [
+        _c("div", { staticClass: "circle" })
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "gap-patch" }, [
+        _c("div", { staticClass: "circle" })
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "circle-clipper right" }, [
+        _c("div", { staticClass: "circle" })
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "select" }, [
+      _c("span", { staticClass: "name" }, [_vm._v("No Result Found")])
     ])
   }
 ]
@@ -50342,23 +50498,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Navbar_vue_vue_type_template_id_6dde423b___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
-
-/***/ }),
-
-/***/ "./resources/js/eventbus.js":
-/*!**********************************!*\
-  !*** ./resources/js/eventbus.js ***!
-  \**********************************/
-/*! exports provided: EventBus */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EventBus", function() { return EventBus; });
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
-
-var EventBus = new vue__WEBPACK_IMPORTED_MODULE_0___default.a();
 
 /***/ }),
 
