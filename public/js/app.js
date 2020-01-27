@@ -2059,6 +2059,9 @@ var debounce = __webpack_require__(/*! debounce */ "./node_modules/debounce/inde
     debounceInput: _.debounce(function () {
       this.search();
     }, 500),
+    debounceSubmit: _.debounce(function () {
+      this.submit();
+    }, 500),
     search: function search() {
       var _this = this;
 
@@ -2096,6 +2099,7 @@ var debounce = __webpack_require__(/*! debounce */ "./node_modules/debounce/inde
       this.location = this.name = name;
       this.country_code = country_code;
       this.city = city;
+      this.debounceSubmit();
     },
     submit: function submit() {
       document.getElementById("weather").submit();

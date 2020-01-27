@@ -62,6 +62,9 @@
             debounceInput: _.debounce(function () {
                 this.search();
             }, 500),
+            debounceSubmit: _.debounce(function () {
+                this.submit();
+            }, 500),
             search() {
                 const proxy_server = "https://cors-anywhere.herokuapp.com/";
                 const location_api_url = "https://api.foursquare.com/"
@@ -97,6 +100,7 @@
                 this.location = this.name = name
                 this.country_code = country_code
                 this.city = city
+                this.debounceSubmit()
             },
             submit() {
                 document.getElementById("weather").submit();

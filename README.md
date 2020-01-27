@@ -1,3 +1,10 @@
+## Change Note
+
+* More PHP Laravel implementation
+* Improved UI/UX
+
+** IMPORTANT: Make sure to update your .env file according to .env.example for the API keys
+
 ## About WeatherMate
 
 WeatherMate is a simple weather application for tourists in Japan. It fetches the current weather and the weather every three(3) hours. WeatherMate is best viewed in mobile since travellers are always looking at their phone for updates. Simply search for the location that you want to check the weather. 
